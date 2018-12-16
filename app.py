@@ -10,6 +10,7 @@ X=[0]
 Y1=[ps.cpu_percent()]
 Y2=[ps.virtual_memory().percent]
 app = dash.Dash()
+server = app.server
 app.config['suppress_callback_exceptions']=True
 app.layout = html.Div(
     [
