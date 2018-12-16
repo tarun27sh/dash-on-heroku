@@ -41,8 +41,8 @@ def my_graph_update ():
             'data':data,
             'layout':go.Layout(
                                title="CPU, Virtual-Memory overtime",
-                               xaxis = {'title' : 'Time'},
-                               yaxis = {'title' : 'CPU'}
+                               xaxis = {'title' : 'Time', 'range': [min(X), max(X)]},
+                               yaxis = {'title' : 'CPU',  'range': [min(Y1+Y2), max(Y1+Y2)]}
                               )
            }                   
 
