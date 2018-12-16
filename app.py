@@ -37,6 +37,8 @@ def my_graph_update ():
     data1 = go.Scatter(x = X,y = Y1,name = 'CPU',mode = 'lines+markers')
     data2 = go.Scatter(x = X,y = Y2,name = 'Virtual Memory',mode = 'lines+markers')
     data = [data1, data2]
+    print('seetting X min, max = %u, %u'.format(min(X), max(X)))
+    print('seetting Y min, max = %u, %u'.format(min(Y1+Y2), max(Y1+Y2)))
     return {
             'data':data,
             'layout':go.Layout(
