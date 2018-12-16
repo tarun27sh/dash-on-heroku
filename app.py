@@ -9,6 +9,8 @@ import psutil as ps
 X=[0]
 Y1=[ps.cpu_percent()]
 Y2=[ps.virtual_memory().percent]
+Y3=[ps.net_io_counters().bytes_sent]
+Y4=[ps.net_io_counters().bytes_recv]
 app = dash.Dash()
 server = app.server
 app.config['suppress_callback_exceptions']=True
@@ -32,19 +34,21 @@ def my_graph_update ():
     X.append(X[-1] + 1)
     Y1.append(ps.cpu_percent())
     Y2.append(ps.virtual_memory().percent)
+    Y3.append(ps.net_io_counters().bytes_sent)
+    Y3.append(ps.net_io_counters().bytes_recv)
 
 
     data1 = go.Scatter(x = X,y = Y1,name = 'CPU',mode = 'lines+markers')
     data2 = go.Scatter(x = X,y = Y2,name = 'Virtual Memory',mode = 'lines+markers')
-    data = [data1, data2]
-    print('seetting X min, max = %u, %u'.format(min(X), max(X)))
-    print('seetting Y min, max = %u, %u'.format(min(Y1+Y2), max(Y1+Y2)))
+    data3 = go.Scatter(x = X,y = Y3,name = 'Bytes Sent',mode = 'lines+markers')
+    data4 = go.Scatter(x = X,y = Y4,name = 'Bytes Recv',mode = 'lines+markers')
+    data = [data1, data2, data3, data4]
     return {
             'data':data,
             'layout':go.Layout(
                                title="CPU, Virtual-Memory overtime",
-                               xaxis = {'title' : 'Time', 'range': [min(X), max(X)]},
-                               yaxis = {'title' : 'CPU',  'range': [min(Y1+Y2), max(Y1+Y2)]}
+                               xaxis = {'title' : 'Units: Seconds', 'range': [min(X), max(X)]},
+                               yaxis = {                            'range': [min(Y1+Y2+Y3+Y4), max(Y1+Y2+Y3+Y4)]}
                               )
            }                   
 
