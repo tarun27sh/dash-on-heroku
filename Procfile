@@ -1,1 +1,1 @@
-web: gunicorn app:server  --log-file -
+web: gunicorn -k gevent app:server  --log-file -
