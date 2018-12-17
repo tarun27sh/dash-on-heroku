@@ -6,6 +6,65 @@ import plotly
 import plotly.graph_objs as go
 
 import psutil as ps
+import threading
+import time
+
+class Data:
+    X=[]
+    Y1=[]
+    Y2=[]
+    Y3=[]
+    Y4=[]
+    initialized = False
+    connections = 0
+    ticks = 0
+    def __init__(self):
+        # print on UI # of inits called
+        Data.connections += 1
+        if Data.initialized:
+            return
+        else:
+            Data.X=[0]
+            Data.Y1=[ps.cpu_percent()]
+            Data.Y2=[ps.virtual_memory().percent]
+            Data.Y3=[ps.net_io_counters().bytes_sent >> 20]
+            Data.Y4=[ps.net_io_counters().bytes_recv >> 20]
+            Data.initialized = True
+            Data.ticks=0
+            t = threading.Thread(self.every_one_sec_stats())
+            t.start()
+    
+    def every_one_sec_stats(self):
+        while True:
+            print('1sec ')
+            Data.ticks += 1
+            Data.X.append( Data.X[-1] + 1 )
+            Data.Y1.append(ps.cpu_percent())
+            Data.Y2.append(ps.virtual_memory().percent)
+            Data.Y3.append(ps.net_io_counters().bytes_sent >> 20)
+            Data.Y4.append(ps.net_io_counters().bytes_recv >> 20)
+            time.sleep(1)
+
+    def get_timestamp_readings(self):
+        return self.X[-30:]
+
+    def get_cpu_percent_readings(self):
+        return self.Y1[-30:]
+
+    def get_vmem_percent_readings(self):
+        return self.Y2[-30:]
+
+    def get_MB_sent_readings(self):
+        return self.Y3[-30:]
+
+    def get_MB_recv_readings(self):
+        return self.Y4[-30:]
+
+    def __repr__(self):
+        return 'ticks={}, cpu={}, vmem={}, MBout={}, MBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
+
+    def __str__(self):
+        return 'ticks={}, cpu={}, vmem={}, MBout={}, MBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
 
 # externnal css
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -49,78 +108,54 @@ app.layout = html.Div(children =
 
 
 
-X=[0]
-X2=[0]
-Y1=[ps.cpu_percent()]
-Y2=[ps.virtual_memory().percent]
-Y3=[ps.net_io_counters().bytes_sent >> 20]
-Y4=[ps.net_io_counters().bytes_recv >> 20]
-
-
-
-
 @app.callback(Output('my_graph', 'figure'), 
               events = [Event('my_graph_update', 'interval')])
 def my_graph_update ():
-    global X
-    global Y1
-    global Y2
-    print('Update calleed')
-    X.append(X[-1] + 1)
-    Y1.append(ps.cpu_percent())
-    Y2.append(ps.virtual_memory().percent)
-
-
-    data1 = go.Scatter(x = X[-10:], 
-                       y = Y1[-10:],
-                       name = 'CPU',
-                       mode = 'lines+markers',
-                       fill = 'tozeroy')
-    data2 = go.Scatter(x = X[-10:], 
-                       y = Y2[-10:],
-                       name = 'Virtual Memory',
-                       mode = 'lines+markers',
-                       fill = 'tonexty')
-    data = [data1, data2]
+    data = Data()
+    print('Update called      - ')
+    scatter_data1 = go.Scatter(x = data.get_timestamp_readings(),
+                               y = data.get_cpu_percent_readings(),
+                               name = 'CPU',
+                               mode = 'lines+markers',
+                               fill = 'tozeroy')
+    scatter_data2 = go.Scatter(x = data.get_timestamp_readings(), 
+                                  y = data.get_vmem_percent_readings(),
+                                  name = 'Virtual Memory',
+                                  mode = 'lines+markers',
+                                  fill = 'tonexty')
+    scatter_data = [scatter_data1, scatter_data2]
     return {
-            'data':data,
-            'layout':go.Layout(
-                               title="CPU, Virtual-Memory overtime",
-                               xaxis = {'title' : 'Units: Seconds', 'range': [min(X[-10:]), max(X[-10:])]},
-                               yaxis = {'title' : '%age'          , 'range': [0, max(Y1[-10:]+Y2[-10:])]}
-                              )
+            'data'  : scatter_data,
+            'layout': go.Layout(
+                               title="CPU, Virtual-Memory overtime (Last 30 readings)",
+                               xaxis = {'title' : 'Units: Seconds', 'range': [min(data.get_timestamp_readings()), max(data.get_timestamp_readings())]},
+                               yaxis = {'title' : '%age'          , 'range': [0, max(data.get_cpu_percent_readings() + data.get_vmem_percent_readings())]}
+                               )
            }                   
 
 @app.callback(Output('my_graph2', 'figure'), 
               events = [Event('my_graph_update2', 'interval')])
 def my_graph_update2 ():
-    global X2
-    global Y3
-    global Y4
-    print('Update calleed')
-    X2.append(X2[-1] + 1)
-    Y3.append(ps.net_io_counters().bytes_sent >> 20) # MB
-    Y4.append(ps.net_io_counters().bytes_recv >> 20) # MB
-
-
-    data3 = go.Scatter(x = X2[-10:],
-                       y = Y3[-10:],
+    data = Data()
+    print('Updating 2nd graph - ')
+    scatter_data3 = go.Scatter(x = data.get_timestamp_readings(),
+                       y = data.get_MB_sent_readings(),
                        name = 'MB Sent',
                        mode = 'lines+markers',
                        fill = 'tozeroy')
-    data4 = go.Scatter(x = X2[-10:],
-                       y = Y4[-10:],
+    scatter_data4 = go.Scatter(x = data.get_timestamp_readings(),
+                       y = data.get_MB_recv_readings(),
                        name = 'MB Recv',
                        mode = 'lines+markers',
                        fill = 'tonexty')
-    data = [data3, data4]
+    scatter_data = [scatter_data3, scatter_data4]
     return {
-            'data':data,
-            'layout':go.Layout(
-                               title="Pkt sent/recv overtime",
-                               xaxis = {'title' : 'Units: Seconds', 'range': [min(X2[-10:]), max(X2[-10:])]},
-                               yaxis = {'title' : 'MB'            , 'range': [0, max(Y3[-10:]+Y4[-10:])]}
-                              )
+            'data'  : scatter_data,
+            'layout': go.Layout(
+                               title="Pkt sent/recv overtime (last 30 readings)",
+                               xaxis = {'title' : 'Units: Seconds', 'range': [min(data.get_timestamp_readings()), max(data.get_timestamp_readings())]},
+                               yaxis = {'title' : 'MB'            , 'range': [0, max(data.get_MB_sent_readings() + data.get_MB_recv_readings())]}
+                               )
            }                   
 if __name__ == '__main__':
     app.run_server(debug=True)
