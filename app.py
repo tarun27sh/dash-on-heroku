@@ -32,8 +32,8 @@ class Data:
             Data.X=[0]
             Data.Y1=[ps.cpu_percent()]
             Data.Y2=[ps.virtual_memory().percent]
-            Data.Y3=[ps.net_io_counters().bytes_sent >> 20]
-            Data.Y4=[ps.net_io_counters().bytes_recv >> 20]
+            Data.Y3=[ps.net_io_counters().bytes_sent >> 10]
+            Data.Y4=[ps.net_io_counters().bytes_recv >> 10]
             Data.initialized = True
             Data.ticks=0
             t = threading.Thread(self.every_one_sec_stats())
@@ -46,8 +46,8 @@ class Data:
             Data.X.append( Data.X[-1] + 1 )
             Data.Y1.append(ps.cpu_percent())
             Data.Y2.append(ps.virtual_memory().percent)
-            Data.Y3.append(ps.net_io_counters().bytes_sent >> 20)
-            Data.Y4.append(ps.net_io_counters().bytes_recv >> 20)
+            Data.Y3.append(ps.net_io_counters().bytes_sent >> 10)
+            Data.Y4.append(ps.net_io_counters().bytes_recv >> 10)
             time.sleep(1)
 
     def get_timestamp_readings(self):
@@ -59,17 +59,17 @@ class Data:
     def get_vmem_percent_readings(self):
         return self.Y2[-30:]
 
-    def get_MB_sent_readings(self):
+    def get_KB_sent_readings(self):
         return self.Y3[-30:]
 
-    def get_MB_recv_readings(self):
+    def get_KB_recv_readings(self):
         return self.Y4[-30:]
 
     def __repr__(self):
-        return 'ticks={}, cpu={}, vmem={}, MBout={}, MBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
+        return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
 
     def __str__(self):
-        return 'ticks={}, cpu={}, vmem={}, MBout={}, MBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
+        return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
 
 class PageHits:
     page_hits = 0
@@ -146,44 +146,50 @@ app.layout = get_latest_layout
 def my_graph_update ():
     data = Data()
     print('Update called      - ')
-    scatter_data1 = go.Scatter(x = data.get_timestamp_readings(),
-                               y = data.get_cpu_percent_readings(),
+    x_data = data.get_timestamp_readings()
+    y_cpu = data.get_cpu_percent_readings()
+    y_vmem = data.get_vmem_percent_readings()
+    scatter_data1 = go.Scatter(x = x_data,
+                               y = y_cpu,
                                name = 'CPU',
                                mode = 'lines+markers',
                                fill = 'tozeroy')
-    scatter_data2 = go.Scatter(x = data.get_timestamp_readings(), 
-                                  y = data.get_vmem_percent_readings(),
-                                  name = 'Virtual Memory',
-                                  mode = 'lines+markers',
-                                  fill = 'tonexty')
+    scatter_data2 = go.Scatter(x = x_data, 
+                               y = y_vmem,
+                               name = 'Virtual Memory',
+                               mode = 'lines+markers',
+                               fill = 'tonexty')
     scatter_data = [scatter_data1, scatter_data2]
     return {
             'data'  : scatter_data,
             'layout': go.Layout(
                                title="CPU, Virtual-Memory overtime (Last 30 readings)",
                                xaxis = {'title' : 'Units: Seconds', 
-                                        'range' : [min(data.get_timestamp_readings()), 
-                                                   max(data.get_timestamp_readings())]
+                                        'range' : [min(x_data), 
+                                                   max(x_data)]
                                        },
                                yaxis = {'title' : '%age'          , 
-                                        'range' : [min(data.get_cpu_percent_readings() + data.get_vmem_percent_readings()), 
-                                                   max(data.get_cpu_percent_readings() + data.get_vmem_percent_readings())]}
+                                        'range' : [min(y_cpu + y_vmem), 
+                                                   max(y_cpu + y_vmem)]}
                                )
            }                   
 
 @app.callback(Output('my_graph2', 'figure'), 
               events = [Event('my_graph_update2', 'interval')])
 def my_graph_update2 ():
+    x_data = data.get_timestamp_readings()
+    y_recv = data.get_KB_recv_readings()
+    y_sent = data.get_KB_sent_readings()
     data = Data()
     print('Updating 2nd graph - ')
-    scatter_data3 = go.Scatter(x = data.get_timestamp_readings(),
-                       y = data.get_MB_sent_readings(),
-                       name = 'MB Sent',
-                       mode = 'lines+markers',
-                       fill = 'tozeroy')
-    scatter_data4 = go.Scatter(x = data.get_timestamp_readings(),
-                       y = data.get_MB_recv_readings(),
-                       name = 'MB Recv',
+    scatter_data3 = go.Scatter(x = x_data,
+                               y = y_sent,
+                               name = 'KB Sent',
+                               mode = 'lines+markers',
+                               fill = 'tozeroy')
+    scatter_data4 = go.Scatter(x = x_data,
+                               y = y_recv,
+                       name = 'KB Recv',
                        mode = 'lines+markers',
                        fill = 'tonexty')
     scatter_data = [scatter_data3, scatter_data4]
@@ -192,10 +198,10 @@ def my_graph_update2 ():
             'layout': go.Layout(
                                title="Pkt sent/recv overtime (last 30 readings)",
                                xaxis = {'title' : 'Units: Seconds', 
-                                        'range': [min(data.get_timestamp_readings()), 
-                                                  max(data.get_timestamp_readings())]},
-                               yaxis = {'title' : 'MB'            , 
-                                        'range': [min(data.get_MB_sent_readings() + data.get_MB_recv_readings()), 
-                                                  max(data.get_MB_sent_readings() + data.get_MB_recv_readings())]}
+                                        'range': [min(x_data), 
+                                                  max(x_data)]},
+                               yaxis = {'title' : 'KB'            , 
+                                        'range': [min(y_sent + y_recv), 
+                                                  max(y_sent + y_recv)]}
                                )
            }                   
