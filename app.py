@@ -102,14 +102,14 @@ def get_latest_layout():
     return html.Div(children = 
         [
             html.Div([
-                      html.P(children='page hits : {}'.format(hits.get_page_hits())),
-            ]),
-            html.Div([
                       html.H1(children='Heroku Dyno System Stats', style={'color': 'blue', 'fontSize': 20, 'font-family': 'Sans-Serif'}),
                       html.H2(children=about, style={'color': 'grey', 'fontSize': 14, 'font-family': 'Sans-Serif'}),
-                      html.P(children='No of CPUs       : {}'.format(ps.cpu_count())),
-                      html.P(children='CPU Freq         : {}'.format(ps.cpu_freq())),
-                      html.P(children='No of connections: {}'.format(len(ps.net_connections()))),
+                      html.P(children='No of CPUs       : {}'.format(ps.cpu_count()), 
+                             style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
+                      html.P(children='CPU Freq         : {}'.format(ps.cpu_freq()),  
+                             style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
+                      html.P(children='No of connections: {}'.format(len(ps.net_connections())), 
+                             style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
                       dcc.Graph(
                                 id='my_graph',
                                 animate=True
@@ -130,6 +130,10 @@ def get_latest_layout():
                                 interval=2000 # ms
                       ),
             ])
+            html.Div([
+                      html.P(children='page hits : {}'.format(hits.get_page_hits())
+                             style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
+            ]),
         ], 
         style={'marginBottom': 50, 'marginTop': 25}
     )
