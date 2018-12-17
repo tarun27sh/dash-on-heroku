@@ -129,9 +129,9 @@ def get_latest_layout():
                                 id='my_graph_update2',
                                 interval=2000 # ms
                       ),
-            ])
+            ]),
             html.Div([
-                      html.P(children='page hits : {}'.format(hits.get_page_hits())
+                      html.P(children='page hits : {}'.format(hits.get_page_hits()),
                              style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
             ]),
         ], 
