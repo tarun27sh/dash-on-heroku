@@ -29,7 +29,7 @@ app.layout = html.Div(children =
                   ),
                   dcc.Interval(
                             id='my_graph_update',
-                            interval=5000 # ms
+                            interval=2000 # ms
                   ),
         ]),
         html.Div([
@@ -40,7 +40,7 @@ app.layout = html.Div(children =
                   ),
                   dcc.Interval(
                             id='my_graph_update2',
-                            interval=5000 # ms
+                            interval=2000 # ms
                   ),
         ])
     ], 
@@ -71,13 +71,13 @@ def my_graph_update ():
     Y2.append(ps.virtual_memory().percent)
 
 
-    data1 = go.Scatter(x = X, 
-                       y = Y1,
+    data1 = go.Scatter(x = X[-10:], 
+                       y = Y1[-10:],
                        name = 'CPU',
                        mode = 'lines+markers',
                        fill = 'tozeroy')
-    data2 = go.Scatter(x = X, 
-                       y = Y2,
+    data2 = go.Scatter(x = X[-10:], 
+                       y = Y2[-10:],
                        name = 'Virtual Memory',
                        mode = 'lines+markers',
                        fill = 'tonexty')
@@ -86,8 +86,8 @@ def my_graph_update ():
             'data':data,
             'layout':go.Layout(
                                title="CPU, Virtual-Memory overtime",
-                               xaxis = {'title' : 'Units: Seconds', 'range': [min(X), max(X)]},
-                               yaxis = {'title' : '%age'          , 'range': [0, max(Y1+Y2)]}
+                               xaxis = {'title' : 'Units: Seconds', 'range': [min(X[-10:]), max(X[-10:])]},
+                               yaxis = {'title' : '%age'          , 'range': [0, max(Y1[-10:]+Y2[-10:])]}
                               )
            }                   
 
@@ -103,13 +103,13 @@ def my_graph_update2 ():
     Y4.append(ps.net_io_counters().bytes_recv >> 20) # MB
 
 
-    data3 = go.Scatter(x = X2,
-                       y = Y3,
+    data3 = go.Scatter(x = X2[-10:],
+                       y = Y3[-10:],
                        name = 'MB Sent',
                        mode = 'lines+markers',
                        fill = 'tozeroy')
-    data4 = go.Scatter(x = X2,
-                       y = Y4,
+    data4 = go.Scatter(x = X2[-10:],
+                       y = Y4[-10:],
                        name = 'MB Recv',
                        mode = 'lines+markers',
                        fill = 'tonexty')
@@ -118,8 +118,8 @@ def my_graph_update2 ():
             'data':data,
             'layout':go.Layout(
                                title="Pkt sent/recv overtime",
-                               xaxis = {'title' : 'Units: Seconds', 'range': [min(X2), max(X2)]},
-                               yaxis = {'title' : 'MB'            , 'range': [0, max(Y3+Y4)]}
+                               xaxis = {'title' : 'Units: Seconds', 'range': [min(X2[-10:]), max(X2[-10:])]},
+                               yaxis = {'title' : 'MB'            , 'range': [0, max(Y3[-10:]+Y4[-10:])]}
                               )
            }                   
 if __name__ == '__main__':
