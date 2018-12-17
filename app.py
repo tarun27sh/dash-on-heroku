@@ -161,8 +161,13 @@ def my_graph_update ():
             'data'  : scatter_data,
             'layout': go.Layout(
                                title="CPU, Virtual-Memory overtime (Last 30 readings)",
-                               xaxis = {'title' : 'Units: Seconds', 'range': [min(data.get_timestamp_readings()), max(data.get_timestamp_readings())]},
-                               yaxis = {'title' : '%age'          , 'range': [0, max(data.get_cpu_percent_readings() + data.get_vmem_percent_readings())]}
+                               xaxis = {'title' : 'Units: Seconds', 
+                                        'range' : [min(data.get_timestamp_readings()), 
+                                                   max(data.get_timestamp_readings())]
+                                       },
+                               yaxis = {'title' : '%age'          , 
+                                        'range' : [min(data.get_cpu_percent_readings() + data.get_vmem_percent_readings()), 
+                                                   max(data.get_cpu_percent_readings() + data.get_vmem_percent_readings())]}
                                )
            }                   
 
