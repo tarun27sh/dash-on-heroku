@@ -29,7 +29,7 @@ app.layout = html.Div(children =
                   ),
                   dcc.Interval(
                             id='my_graph_update',
-                            interval=1000 # ms
+                            interval=5000 # ms
                   ),
         ]),
         html.Div([
@@ -40,7 +40,7 @@ app.layout = html.Div(children =
                   ),
                   dcc.Interval(
                             id='my_graph_update2',
-                            interval=1000 # ms
+                            interval=5000 # ms
                   ),
         ])
     ], 
