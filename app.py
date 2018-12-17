@@ -9,6 +9,11 @@ import psutil as ps
 import threading
 import time
 
+
+about = '''
+This is a python web application created using Dash python web framework and deployed on Free Heroku Dyno
+'''
+
 class Data:
     X=[]
     Y1=[]
@@ -94,7 +99,6 @@ server = app.server
 app.config['suppress_callback_exceptions']=True
 
 def get_latest_layout():
-    print('getting latest layout')
     return html.Div(children = 
         [
             html.Div([
@@ -102,7 +106,10 @@ def get_latest_layout():
             ]),
             html.Div([
                       html.H1(children='Heroku Dyno System Stats', style={'color': 'blue', 'fontSize': 20, 'font-family': 'Sans-Serif'}),
-                      html.P(children='#-CPU : {}'.format(ps.cpu_count())),
+                      html.H2(children=about, style={'color': 'grey', 'fontSize': 14, 'font-family': 'Sans-Serif'}),
+                      html.P(children='No of CPUs       : {}'.format(ps.cpu_count())),
+                      html.P(children='CPU Freq         : {}'.format(ps.cpu_freq())),
+                      html.P(children='No of connections: {}'.format(len(ps.net_connections()))),
                       dcc.Graph(
                                 id='my_graph',
                                 animate=True
