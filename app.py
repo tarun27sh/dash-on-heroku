@@ -87,7 +87,7 @@ def my_graph_update ():
             'layout':go.Layout(
                                title="CPU, Virtual-Memory overtime",
                                xaxis = {'title' : 'Units: Seconds', 'range': [min(X), max(X)]},
-                               yaxis = {                            'range': [min(Y1+Y2), max(Y1+Y2)]}
+                               yaxis = {'title' : '%age'          , 'range': [0, max(Y1+Y2)]}
                               )
            }                   
 
@@ -119,7 +119,7 @@ def my_graph_update2 ():
             'layout':go.Layout(
                                title="Pkt sent/recv overtime",
                                xaxis = {'title' : 'Units: Seconds', 'range': [min(X2), max(X2)]},
-                               yaxis = {                            'range': [min(Y3+Y4), max(Y3+Y4)]}
+                               yaxis = {'title' : 'MB'            , 'range': [0, max(Y3+Y4)]}
                               )
            }                   
 if __name__ == '__main__':
