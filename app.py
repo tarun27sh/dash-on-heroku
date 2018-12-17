@@ -191,7 +191,11 @@ def my_graph_update2 ():
             'data'  : scatter_data,
             'layout': go.Layout(
                                title="Pkt sent/recv overtime (last 30 readings)",
-                               xaxis = {'title' : 'Units: Seconds', 'range': [min(data.get_timestamp_readings()), max(data.get_timestamp_readings())]},
-                               yaxis = {'title' : 'MB'            , 'range': [0, max(data.get_MB_sent_readings() + data.get_MB_recv_readings())]}
+                               xaxis = {'title' : 'Units: Seconds', 
+                                        'range': [min(data.get_timestamp_readings()), 
+                                                  max(data.get_timestamp_readings())]},
+                               yaxis = {'title' : 'MB'            , 
+                                        'range': [min(data.get_MB_sent_readings() + data.get_MB_recv_readings()), 
+                                                  max(data.get_MB_sent_readings() + data.get_MB_recv_readings())]}
                                )
            }                   
