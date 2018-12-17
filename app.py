@@ -66,47 +66,69 @@ class Data:
     def __str__(self):
         return 'ticks={}, cpu={}, vmem={}, MBout={}, MBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
 
+class PageHits:
+    page_hits = 0
+    initialized = False
+    def __init__(self):
+        if PageHits.initialized:
+            return
+        else:
+            PageHits.page_hits = 0
+            PageHits.initialized = True
+    def get_page_hits(self):
+        PageHits.page_hits += 1
+        print('page hits set - {}'.format(PageHits.page_hits))
+        return PageHits.page_hits
+    def __str__(self):
+        return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, PageHits.page_hits)
+
+
 # externnal css
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 #app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-
-
+hits = PageHits()
+print('page hits set - {}'.format(hits))
 app = dash.Dash()
 server = app.server
 app.config['suppress_callback_exceptions']=True
-app.layout = html.Div(children = 
-    [
-        html.Div([
-        ]),
-        html.Div([
-                  html.H1(children='Heroku Dyno System Stats', style={'color': 'blue', 'fontSize': 20, 'font-family': 'Sans-Serif'}),
-                  html.P(children='#-CPU : {}'.format(ps.cpu_count())),
-                  dcc.Graph(
-                            id='my_graph',
-                            animate=True
-                  ),
-                  dcc.Interval(
-                            id='my_graph_update',
-                            interval=2000 # ms
-                  ),
-        ]),
-        html.Div([
-                  #html.H1(children='Heroku dyno packet sent/recv over time'),
-                  dcc.Graph(
-                            id='my_graph2',
-                            animate=True
-                  ),
-                  dcc.Interval(
-                            id='my_graph_update2',
-                            interval=2000 # ms
-                  ),
-        ])
-    ], 
-    style={'marginBottom': 50, 'marginTop': 25}
-)
+
+def get_latest_layout():
+    print('getting latest layout')
+    return html.Div(children = 
+        [
+            html.Div([
+                      html.P(children='page hits : {}'.format(hits.get_page_hits())),
+            ]),
+            html.Div([
+                      html.H1(children='Heroku Dyno System Stats', style={'color': 'blue', 'fontSize': 20, 'font-family': 'Sans-Serif'}),
+                      html.P(children='#-CPU : {}'.format(ps.cpu_count())),
+                      dcc.Graph(
+                                id='my_graph',
+                                animate=True
+                      ),
+                      dcc.Interval(
+                                id='my_graph_update',
+                                interval=2000 # ms
+                      ),
+            ]),
+            html.Div([
+                      #html.H1(children='Heroku dyno packet sent/recv over time'),
+                      dcc.Graph(
+                                id='my_graph2',
+                                animate=True
+                      ),
+                      dcc.Interval(
+                                id='my_graph_update2',
+                                interval=2000 # ms
+                      ),
+            ])
+        ], 
+        style={'marginBottom': 50, 'marginTop': 25}
+    )
 
 
+app.layout = get_latest_layout
 
 @app.callback(Output('my_graph', 'figure'), 
               events = [Event('my_graph_update', 'interval')])
@@ -157,5 +179,3 @@ def my_graph_update2 ():
                                yaxis = {'title' : 'MB'            , 'range': [0, max(data.get_MB_sent_readings() + data.get_MB_recv_readings())]}
                                )
            }                   
-if __name__ == '__main__':
-    app.run_server(debug=True)
