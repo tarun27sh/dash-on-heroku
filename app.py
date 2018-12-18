@@ -136,8 +136,9 @@ def get_latest_layout():
                       ),
             ]),
             html.Div([
-                     html.Footer(children='Created By: Tarun Sharma (tarun27sh@gmail.com)'
-                     )
+                     html.Footer(children='Created By: Tarun Sharma (tarun27sh@gmail.com)',
+                                 style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}
+                     ),
             ]),
         ], 
         style={'marginBottom': 50, 'marginTop': 25}
