@@ -16,10 +16,10 @@ This is a python web application created using Dash python web framework and dep
 
 class Data:
     X=[]
-    Y1=[]
-    Y2=[]
-    Y3=[]
-    Y4=[]
+    Y1=[0 for x in range(30)]
+    Y2=[0 for x in range(30)]
+    Y3=[0 for x in range(30)]
+    Y4=[0 for x in range(30)]
     initialized = False
     connections = 0
     ticks = 0
