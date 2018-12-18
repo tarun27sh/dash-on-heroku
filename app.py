@@ -138,10 +138,6 @@ def get_latest_layout():
             html.Div([
                      html.Footer(children='Created By: Tarun Sharma (tarun27sh@gmail.com)'
                      )
-<footer>
-  <p>Posted by: Hege Refsnes</p>
-  <p>Contact information: <a href="mailto:someone@example.com">someone@example.com</a>.</p>
-</footer>            
             ]),
         ], 
         style={'marginBottom': 50, 'marginTop': 25}
