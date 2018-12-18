@@ -108,7 +108,7 @@ def get_latest_layout():
                              style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
                       html.P(children='CPU Freq         : {}'.format(ps.cpu_freq()),  
                              style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
-                      html.P(children='No of connections: {}'.format(len(ps.net_connections())), 
+                      html.P(children='Sockets (file/inet): {}'.format(len(ps.net_connections())), 
                              style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
                       dcc.Graph(
                                 id='my_graph',
