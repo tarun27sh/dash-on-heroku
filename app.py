@@ -11,7 +11,7 @@ import time
 
 
 about = '''
-This is a python web application created using Dash python web framework and deployed on Free Heroku Dyno
+This is a python web application created using Dash python web framework and deployed on Heroku Dyno
 '''
 
 class Data:
@@ -80,36 +80,30 @@ class PageHits:
         else:
             PageHits.page_hits = 0
             PageHits.initialized = True
+
     def get_page_hits(self):
-        PageHits.page_hits += 1
-        print('page hits set - {}'.format(PageHits.page_hits))
         return PageHits.page_hits
+
+    def inc_page_hit(self):
+        PageHits.page_hits += 1
+
     def __str__(self):
         return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, PageHits.page_hits)
 
 
-# externnal css
-#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-#app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-hits = PageHits()
-print('page hits set - {}'.format(hits))
-app = dash.Dash()
-server = app.server
-app.config['suppress_callback_exceptions']=True
 
 def get_latest_layout():
+    hits = PageHits()
+    hits.inc_page_hit()
+    print('page hits set - {}'.format(hits))
     return html.Div(children = 
         [
             html.Div([
-                      html.H1(children='Heroku Dyno System Stats', style={'color': 'blue', 'fontSize': 20, 'font-family': 'Sans-Serif'}),
-                      html.H2(children=about, style={'color': 'grey', 'fontSize': 14, 'font-family': 'Sans-Serif'}),
-                      html.H3(children='No of CPUs       : {}'.format(ps.cpu_count()), 
-                             style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
-                      html.H3(children='CPU Freq         : {}'.format(ps.cpu_freq().current),
-                             style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
-                      html.H3(children='Sockets (IPv4 + Ipv6): {}'.format(len(ps.net_connections())), 
-                             style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
+                      html.H1(children='Heroku Dyno System Stats'),
+                      html.H2(children=about),
+                      html.P(children='No of CPUs       : {}'.format(ps.cpu_count())), 
+                      html.P(children='CPU Freq         : {} MHz'.format(ps.cpu_freq().current)),
+                      #html.P(children='Sockets (IPv4 + Ipv6): {}'.format(len(ps.net_connections()))),
                       dcc.Graph(
                                 id='my_graph',
                                 animate=True
@@ -118,7 +112,8 @@ def get_latest_layout():
                                 id='my_graph_update',
                                 interval=2000 # ms
                       ),
-            ]),
+                ],
+            ),
             html.Div([
                       #html.H1(children='Heroku dyno packet sent/recv over time'),
                       dcc.Graph(
@@ -131,22 +126,30 @@ def get_latest_layout():
                       ),
             ]),
             html.Div([
-                      html.P(children='page hits : {}'.format(hits.get_page_hits()),
-                             style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}
-                      ),
+                      html.P(children='page hits : {}'.format(hits.get_page_hits())),
             ]),
             html.Div([
-                     html.Footer(children='Created By: Tarun Sharma (tarun27sh@gmail.com)',
-                                 style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}
-                     ),
+                     html.Footer(children='Created By: Tarun Sharma (tarun27sh@gmail.com)'),
             ]),
-        ], 
-        style={'marginBottom': 50, 'marginTop': 25}
+        ],
+        className='container',
     )
 
 
+# Dash app init
+app = dash.Dash()
+server = app.server
+# externnal css
+app.css.append_css({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'})
+app.config['suppress_callback_exceptions']=True
 app.layout = get_latest_layout
+app.scripts.append_script({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'})
 
+
+
+
+
+# callbacks for dash events
 @app.callback(Output('my_graph', 'figure'), 
               events = [Event('my_graph_update', 'interval')])
 def my_graph_update ():
@@ -169,7 +172,7 @@ def my_graph_update ():
     return {
             'data'  : scatter_data,
             'layout': go.Layout(
-                               title="CPU, Virtual-Memory overtime (Last 30 readings)",
+                               title="CPU, Virtual-Memory overtime (Last 30 seconds)",
                                xaxis = {'title' : 'Units: Seconds', 
                                         'range' : [min(x_data), 
                                                    max(x_data)]
@@ -211,4 +214,5 @@ def my_graph_update2 ():
                                         'range': [min(y_sent + y_recv), 
                                                   max(y_sent + y_recv)]}
                                )
-           }                   
+    }
+
