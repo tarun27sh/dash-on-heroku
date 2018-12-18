@@ -11,7 +11,7 @@ import time
 
 
 about = '''
-This is a python web application created using Dash python web framework and deployed on Heroku Dyno
+This is a python web application created using Dash python web framework and deployed on Heroku Dyno 
 '''
 
 class Data:
