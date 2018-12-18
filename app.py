@@ -139,11 +139,11 @@ def get_latest_layout():
 # Dash app init
 app = dash.Dash()
 server = app.server
-# externnal css
-app.css.append_css({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'})
 app.config['suppress_callback_exceptions']=True
 app.layout = get_latest_layout
+# externnal css
 app.scripts.append_script({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'})
+app.css.append_css({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'})
 
 
 
