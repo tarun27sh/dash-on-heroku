@@ -51,19 +51,19 @@ class Data:
             time.sleep(1)
 
     def get_timestamp_readings(self):
-        return self.X[-30:]
+        return Data.X[-30:]
 
     def get_cpu_percent_readings(self):
-        return self.Y1[-30:]
+        return Data.Y1[-30:]
 
     def get_vmem_percent_readings(self):
-        return self.Y2[-30:]
+        return Data.Y2[-30:]
 
     def get_KB_sent_readings(self):
-        return self.Y3[-30:]
+        return Data.Y3[-30:]
 
     def get_KB_recv_readings(self):
-        return self.Y4[-30:]
+        return Data.Y4[-30:]
 
     def __repr__(self):
         return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
@@ -103,7 +103,7 @@ def get_latest_layout():
                       html.H2(children=about),
                       html.P(children='No of CPUs       : {}'.format(ps.cpu_count())), 
                       html.P(children='CPU Freq         : {} MHz'.format(ps.cpu_freq().current)),
-                      #html.P(children='Sockets (IPv4 + Ipv6): {}'.format(len(ps.net_connections()))),
+                      html.P(children='Sockets (IPv4 + Ipv6): {}'.format(len(ps.net_connections()))),
                       dcc.Graph(
                                 id='my_graph',
                                 animate=True
