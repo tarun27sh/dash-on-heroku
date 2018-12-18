@@ -104,11 +104,11 @@ def get_latest_layout():
             html.Div([
                       html.H1(children='Heroku Dyno System Stats', style={'color': 'blue', 'fontSize': 20, 'font-family': 'Sans-Serif'}),
                       html.H2(children=about, style={'color': 'grey', 'fontSize': 14, 'font-family': 'Sans-Serif'}),
-                      html.P(children='No of CPUs       : {}'.format(ps.cpu_count()), 
+                      html.H3(children='No of CPUs       : {}'.format(ps.cpu_count()), 
                              style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
-                      html.P(children='CPU Freq         : {}'.format(ps.cpu_freq()),  
+                      html.H3(children='CPU Freq         : {}'.format(ps.cpu_freq().current),
                              style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
-                      html.P(children='Sockets (file/inet): {}'.format(len(ps.net_connections())), 
+                      html.H3(children='Sockets (IPv4 + Ipv6): {}'.format(len(ps.net_connections())), 
                              style={'color': 'grey', 'fontSize': 12, 'font-family': 'Sans-Serif'}),
                       dcc.Graph(
                                 id='my_graph',
