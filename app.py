@@ -169,8 +169,9 @@ def my_graph_update ():
                                                    max(x_data)]
                                        },
                                yaxis = {'title' : '%age'          , 
-                                        'range' : [min(y_cpu + y_vmem), 
-                                                   max(y_cpu + y_vmem)]}
+                                        'range' : [0, 
+                                                   100]
+                                       }
                                )
            }                   
 
