@@ -177,11 +177,11 @@ def my_graph_update ():
 @app.callback(Output('my_graph2', 'figure'), 
               events = [Event('my_graph_update2', 'interval')])
 def my_graph_update2 ():
+    data = Data()
+    print('Updating 2nd graph - ')
     x_data = data.get_timestamp_readings()
     y_recv = data.get_KB_recv_readings()
     y_sent = data.get_KB_sent_readings()
-    data = Data()
-    print('Updating 2nd graph - ')
     scatter_data3 = go.Scatter(x = x_data,
                                y = y_sent,
                                name = 'KB Sent',
