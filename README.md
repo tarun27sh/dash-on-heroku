@@ -1,6 +1,6 @@
 # Dash On Heroku
 
-![page](page_screenshot.png)
+![page](page.png)
 
 ## Description
 Web application written in Python using Dash framework and deployed on a Heroku dyno
