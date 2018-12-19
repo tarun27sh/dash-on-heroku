@@ -1,5 +1,7 @@
 # Dash On Heroku
 
+![page](page_screenshot.png)
+
 ## Description
 Web application written in Python using Dash framework and deployed on a Heroku dyno
 (Heroku containers are called Dynos)
