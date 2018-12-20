@@ -11,11 +11,6 @@ import time
 from platform import platform
 
 
-about = '''
-This is a python web application created using Dash python web framework and deployed on Heroku Dyno (container)\n
-Graphs on this page are for heroku dyno where this web application is depeloyed
-'''
-
 class Data:
     X=[]
     Y1=[0 for x in range(30)]
@@ -118,7 +113,7 @@ def get_latest_layout():
             html.Div([
                       html.H4(children='This is a python web application created using Dash python web framework and deployed on Heroku Dyno (container)'),
                       html.P(className='text-muted',
-                             children='Graphs on this page are for heroku dyno where this web application is depeloyed'),
+                             children='Graphs on this page are for heroku dyno where this web application is deployed'),
                 ],
             ),
 			html.Table(className='table',
