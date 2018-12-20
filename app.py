@@ -246,7 +246,7 @@ def my_graph_update3 ():
                                y = y_conn,
                                name = 'No of connections',
                                mode = 'lines+markers',
-                               fill = 'tozeroy')
+                               fill = 'tonexty')
     #scatter_data4 = go.Scatter(x = x_data,
     #                           y = y_recv,
     #                   name = 'KB Recv',
