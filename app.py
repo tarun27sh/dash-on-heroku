@@ -8,10 +8,11 @@ import plotly.graph_objs as go
 import psutil as ps
 import threading
 import time
+from platform import platform
 
 
 about = '''
-This is a python web application created using Dash python web framework and deployed on Heroku Dyno (container)
+This is a python web application created using Dash python web framework and deployed on Heroku Dyno (container)\n
 Graphs on this page are for heroku dyno where this web application is depeloyed
 '''
 
@@ -98,7 +99,9 @@ class PageHits:
     def __str__(self):
         return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, PageHits.page_hits)
 
-
+def get_platform():
+    return platform()
+    
 
 def get_latest_layout():
     hits = PageHits()
@@ -114,15 +117,22 @@ def get_latest_layout():
             html.P(''),
             html.Div([
                       html.H3(children=about),
-                      #html.Ul(children='Heroku Dyno (container) stats', 
-                      html.Ul( 
-                        [
-                        html.Li('# CPUs      : {} @{} Mz'.format(ps.cpu_count(), ps.cpu_freq().current), className='list-group-item'),
-                        html.Li('RAM         : {} MB'.format(ps.virtual_memory().total >> 20), className='list-group-item'),
-                        html.Li('# processes : {}'.format(len(ps.pids())), className='list-group-item'),
-                      ], className="list-group"),
                 ],
             ),
+			html.Table(className='table',
+			    children = 
+			    [
+			        html.Tr( [html.Th('Attribute'), html.Th("Value")] )
+			    ] +
+			    [
+			        html.Tr( [html.Td('OS'),         html.Td('{}'.format(get_platform()))] ),
+			        html.Tr( [html.Td('#CPUs'),      html.Td('{}'.format(ps.cpu_count()))] ),
+			        html.Tr( [html.Td('CPU Clock'),  html.Td('{} MHz'.format(ps.cpu_freq().current))] ),
+			        html.Tr( [html.Td('RAM'),       html.Td('{} GB'.format(format(ps.virtual_memory().total >> 30)))] ),
+			        html.Tr( [html.Td('#processes'), html.Td('{}'.format(len(ps.pids())))] ),
+			    ]
+			),
+            
             html.Div(className="border border-primary",
                       children = [
                           dcc.Graph(
