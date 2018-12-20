@@ -116,7 +116,9 @@ def get_latest_layout():
             html.P(''),
             html.P(''),
             html.Div([
-                      html.H3(children=about),
+                      html.H4(children='This is a python web application created using Dash python web framework and deployed on Heroku Dyno (container)'),
+                      html.P(className='text-muted',
+                             children='Graphs on this page are for heroku dyno where this web application is depeloyed'),
                 ],
             ),
 			html.Table(className='table',
