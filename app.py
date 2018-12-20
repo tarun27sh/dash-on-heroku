@@ -106,7 +106,7 @@ def get_latest_layout():
         [
             html.Div([
                       html.H1(children='Heroku Dyno System Stats'),
-            ),
+            ]),
             html.Div([
                       html.H3(children=about),
                       html.P(children='No of CPUs : {}'.format(ps.cpu_count())), 
