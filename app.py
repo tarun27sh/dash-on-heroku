@@ -38,7 +38,6 @@ class Data:
             Data.Y3=[ps.net_io_counters().bytes_sent >> 10]
             Data.Y4=[ps.net_io_counters().bytes_recv >> 10]
             Data.Y5=[len(ps.net_connections())]
-            Data.Y6=[ps.cpu_freq().current]
             Data.initialized = True
             Data.ticks=0
             t = threading.Thread(self.every_one_sec_stats())
@@ -54,7 +53,6 @@ class Data:
             Data.Y3.append(ps.net_io_counters().bytes_sent >> 10)
             Data.Y4.append(ps.net_io_counters().bytes_recv >> 10)
             Data.Y5.append(len(ps.net_connections()))
-            Data.Y6.append(ps.cpu_freq().current)
             time.sleep(1)
 
     def get_timestamp_readings(self):
@@ -74,9 +72,6 @@ class Data:
 
     def get_inet_connections(self):
         return Data.Y5[-30:]
-
-    def get_cpu_frequency(self):
-        return Data.Y6[-30:]
 
     def __repr__(self):
         return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}, conn={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4, self.Y5)
@@ -119,13 +114,14 @@ def get_latest_layout():
                       #html.Ul(children='Heroku Dyno (container) stats', 
                       html.Ul( 
                         [
-                        html.Li('# CPUs      : {}'.format(ps.cpu_count()), className='list-group-item'),
+                        html.Li('# CPUs      : {} @{} Mz'.format(ps.cpu_count(), ps.cpu_freq().current), className='list-group-item'),
                         html.Li('RAM         : {} MB'.format(ps.virtual_memory().total >> 20), className='list-group-item'),
                         html.Li('# processes : {}'.format(len(ps.pids())), className='list-group-item'),
                       ], className="list-group"),
                 ],
             ),
             html.Div([
+                      html.Span([
                       dcc.Graph(
                                 id='my_graph',
                                 animate=True
@@ -134,6 +130,7 @@ def get_latest_layout():
                                 id='my_graph_update',
                                 interval=2000 # ms
                       ),
+                      ], className="border border-primary"),
                 ],
             ),
             html.Div([
@@ -153,16 +150,6 @@ def get_latest_layout():
                       ),
                       dcc.Interval(
                                 id='my_graph_update3',
-                                interval=2000 # ms
-                      ),
-            ]),
-            html.Div([
-                      dcc.Graph(
-                                id='my_graph4',
-                                animate=True
-                      ),
-                      dcc.Interval(
-                                id='my_graph_update4',
                                 interval=2000 # ms
                       ),
             ]),
@@ -282,29 +269,3 @@ def my_graph_update3 ():
     }
 
 
-@app.callback(Output('my_graph4', 'figure'), 
-              events = [Event('my_graph_update4', 'interval')])
-def my_graph_update4 ():
-    data = Data()
-    print('Updating 4th graph - ')
-    x_data = data.get_timestamp_readings()
-    y_freq = data.get_cpu_frequency()
-    scatter_data = go.Scatter(x = x_data,
-                               y = y_freq,
-                               name = 'CPU Frequency',
-                               mode = 'lines+markers',
-                               fill = 'tonexty')
-    return {
-            'data'  : [scatter_data],
-            'layout': go.Layout(
-                               title="CPU Frequency in Mz(last 30 seconds)",
-                               xaxis = {'title' : 'Units: Seconds', 
-                                        'range': [min(x_data), 
-                                                  max(x_data)]
-                                       },
-                               yaxis = {'title' : 'cpu-freq (Mz)',
-                                        'range': [min(y_freq), 
-                                                  max(y_freq)]
-                                       }
-                               )
-    }
