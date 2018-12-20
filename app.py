@@ -253,7 +253,7 @@ def my_graph_update3 ():
     #                   fill = 'tonexty')
     #scatter_data = [scatter_data3, scatter_data4]
     return {
-            'data'  : scatter_data,
+            'data'  : [scatter_data],
             'layout': go.Layout(
                                title="inet connections (last 30 seconds)",
                                xaxis = {'title' : 'Units: Seconds', 
