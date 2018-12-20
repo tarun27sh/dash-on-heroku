@@ -128,16 +128,6 @@ def get_latest_layout():
             ),
             html.Div([
                       dcc.Graph(
-                                id='my_graph2',
-                                animate=True
-                      ),
-                      dcc.Interval(
-                                id='my_graph_update2',
-                                interval=2000 # ms
-                      ),
-            ]),
-            html.Div([
-                      dcc.Graph(
                                 id='my_graph3',
                                 animate=True
                       ),
@@ -147,10 +137,18 @@ def get_latest_layout():
                       ),
             ]),
             html.Div([
-                      html.P(children='page hits : {}'.format(hits.get_page_hits())),
+                      dcc.Graph(
+                                id='my_graph2',
+                                animate=True
+                      ),
+                      dcc.Interval(
+                                id='my_graph_update2',
+                                interval=2000 # ms
+                      ),
             ]),
             html.Div([
-                     html.Footer(children='Created By: Tarun Sharma (tarun27sh@gmail.com)'),
+                      html.P(children='page hits : {}'.format(hits.get_page_hits())),
+                      html.Footer(children='Created By: Tarun Sharma (tarun27sh@gmail.com)'),
             ]),
         ],
         className='container',
