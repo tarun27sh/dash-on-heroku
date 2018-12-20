@@ -127,7 +127,7 @@ def get_latest_layout():
 			    [
 			        html.Tr( [html.Td('OS'),         html.Td('{}'.format(get_platform()))] ),
 			        html.Tr( [html.Td('#CPUs'),      html.Td('{}'.format(ps.cpu_count()))] ),
-			        html.Tr( [html.Td('CPU Clock'),  html.Td('{} MHz'.format(ps.cpu_freq().current))] ),
+			        html.Tr( [html.Td('CPU Clock'),  html.Td('{} MHz'.format(int(ps.cpu_freq().current)))] ),
 			        html.Tr( [html.Td('RAM'),       html.Td('{} GB'.format(format(ps.virtual_memory().total >> 30)))] ),
 			        html.Tr( [html.Td('#processes'), html.Td('{}'.format(len(ps.pids())))] ),
 			    ]
