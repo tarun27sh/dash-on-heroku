@@ -106,9 +106,12 @@ def get_latest_layout():
     print('page hits set - {}'.format(hits))
     return html.Div(children = 
         [
+            html.P(''),
             html.Div([
                       html.H1(children='Heroku Dyno Stats'),
             ]),
+            html.P(''),
+            html.P(''),
             html.Div([
                       html.H3(children=about),
                       #html.Ul(children='Heroku Dyno (container) stats', 
@@ -120,38 +123,38 @@ def get_latest_layout():
                       ], className="list-group"),
                 ],
             ),
-            html.Div([
-                      html.Span([
-                      dcc.Graph(
-                                id='my_graph',
-                                animate=True
-                      ),
-                      dcc.Interval(
-                                id='my_graph_update',
-                                interval=2000 # ms
-                      ),
-                      ], className="border border-primary"),
-                ],
-            ),
-            html.Div([
-                      dcc.Graph(
-                                id='my_graph2',
-                                animate=True
-                      ),
-                      dcc.Interval(
-                                id='my_graph_update2',
-                                interval=2000 # ms
-                      ),
+            html.Div(className="border border-primary",
+                      children = [
+                          dcc.Graph(
+                                    id='my_graph',
+                                    animate=True
+                          ),
+                          dcc.Interval(
+                                    id='my_graph_update',
+                                    interval=2000 # ms
+                          ),
             ]),
-            html.Div([
-                      dcc.Graph(
-                                id='my_graph3',
-                                animate=True
-                      ),
-                      dcc.Interval(
-                                id='my_graph_update3',
-                                interval=2000 # ms
-                      ),
+            html.Div(className="border border-primary",
+                     children = [
+                         dcc.Graph(
+                                   id='my_graph2',
+                                   animate=True
+                         ),
+                         dcc.Interval(
+                                   id='my_graph_update2',
+                                   interval=2000 # ms
+                         ),
+            ]),
+            html.Div(className="border border-primary",
+                     children = [
+                         dcc.Graph(
+                                   id='my_graph3',
+                                   animate=True
+                         ),
+                         dcc.Interval(
+                                   id='my_graph_update3',
+                                   interval=2000 # ms
+                         ),
             ]),
             html.Div([
                       html.P(children='page hits : {}'.format(hits.get_page_hits())),
