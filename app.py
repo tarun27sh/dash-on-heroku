@@ -20,6 +20,7 @@ class Data:
     Y2=[0 for x in range(30)]
     Y3=[0 for x in range(30)]
     Y4=[0 for x in range(30)]
+    Y5=[0 for x in range(30)]
     initialized = False
     connections = 0
     ticks = 0
@@ -34,6 +35,7 @@ class Data:
             Data.Y2=[ps.virtual_memory().percent]
             Data.Y3=[ps.net_io_counters().bytes_sent >> 10]
             Data.Y4=[ps.net_io_counters().bytes_recv >> 10]
+            Data.Y5=[len(ps.net_connections())]
             Data.initialized = True
             Data.ticks=0
             t = threading.Thread(self.every_one_sec_stats())
@@ -48,6 +50,7 @@ class Data:
             Data.Y2.append(ps.virtual_memory().percent)
             Data.Y3.append(ps.net_io_counters().bytes_sent >> 10)
             Data.Y4.append(ps.net_io_counters().bytes_recv >> 10)
+            Data.Y5.append(ps.net_connections())
             time.sleep(1)
 
     def get_timestamp_readings(self):
@@ -65,11 +68,14 @@ class Data:
     def get_KB_recv_readings(self):
         return Data.Y4[-30:]
 
+    def get_inet_connections(self):
+        return Data.Y5[-30:]
+
     def __repr__(self):
-        return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
+        return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}, conn={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4, self.Y5)
 
     def __str__(self):
-        return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4)
+        return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}, conn={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4, self.Y5)
 
 class PageHits:
     page_hits = 0
@@ -100,10 +106,11 @@ def get_latest_layout():
         [
             html.Div([
                       html.H1(children='Heroku Dyno System Stats'),
-                      html.H2(children=about),
-                      html.P(children='No of CPUs       : {}'.format(ps.cpu_count())), 
-                      html.P(children='CPU Freq         : {} MHz'.format(ps.cpu_freq().current)),
-                      html.P(children='Sockets (IPv4 + Ipv6): {}'.format(len(ps.net_connections()))),
+                      html.H3(children=about),
+                      html.P(children='No of CPUs : {}'.format(ps.cpu_count())), 
+                      html.P(children='CPU Freq   : {} MHz'.format(ps.cpu_freq().current)),
+                      html.P(children='Sockets    : {}'.format(len(ps.net_connections()))),
+                      html.P(children='#processes : {}'.format(len(ps.pids()))),
                       dcc.Graph(
                                 id='my_graph',
                                 animate=True
@@ -122,6 +129,17 @@ def get_latest_layout():
                       ),
                       dcc.Interval(
                                 id='my_graph_update2',
+                                interval=2000 # ms
+                      ),
+            ]),
+            html.Div([
+                      #html.H1(children='Heroku dyno packet sent/recv over time'),
+                      dcc.Graph(
+                                id='my_graph3',
+                                animate=True
+                      ),
+                      dcc.Interval(
+                                id='my_graph_update3',
                                 interval=2000 # ms
                       ),
             ]),
@@ -206,7 +224,7 @@ def my_graph_update2 ():
     return {
             'data'  : scatter_data,
             'layout': go.Layout(
-                               title="Pkt sent/recv overtime (last 30 readings)",
+                               title="Pkt sent/recv overtime (last 30 seconds)",
                                xaxis = {'title' : 'Units: Seconds', 
                                         'range': [min(x_data), 
                                                   max(x_data)]},
@@ -215,4 +233,35 @@ def my_graph_update2 ():
                                                   max(y_sent + y_recv)]}
                                )
     }
+@app.callback(Output('my_graph3', 'figure'), 
+              events = [Event('my_graph_update3', 'interval')])
+def my_graph_update3 ():
+    data = Data()
+    print('Updating 3rd graph - ')
+    x_data = data.get_timestamp_readings()
+    y_conn = data.get_inet_connections()
+    scatter_data = go.Scatter(x = x_data,
+                               y = y_conn,
+                               name = 'No of connections',
+                               mode = 'lines+markers',
+                               fill = 'tozeroy')
+    #scatter_data4 = go.Scatter(x = x_data,
+    #                           y = y_recv,
+    #                   name = 'KB Recv',
+    #                   mode = 'lines+markers',
+    #                   fill = 'tonexty')
+    #scatter_data = [scatter_data3, scatter_data4]
+    return {
+            'data'  : scatter_data,
+            'layout': go.Layout(
+                               title="inet connections (last 30 seconds)",
+                               xaxis = {'title' : 'Units: Seconds', 
+                                        'range': [min(x_data), 
+                                                  max(x_data)]},
+                               yaxis = {'title' : '#connections'            , 
+                                        'range': [min(y_conn), 
+                                                  max(y_conn)]}
+                               )
+    }
+
 
