@@ -169,8 +169,8 @@ def get_latest_layout():
                          ),
             ]),
             html.Div([
-                      html.P(children='page hits : {}'.format(hits.get_page_hits())),
-                      html.Footer(children='Created By: Tarun Sharma (tarun27sh@gmail.com)'),
+                      html.Footer(children=[html.A('Tarun Sharma', href='https://www.linkedin.com/in/tarun27sh/')]),
+                      html.Footer(children=['page hits : {}'.format(hits.get_page_hits())])
             ]),
         ],
         className='container',
