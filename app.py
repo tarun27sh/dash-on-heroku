@@ -116,14 +116,13 @@ def get_latest_layout():
             ]),
             html.Div([
                       html.H3(children=about),
-                      html.Ul(children='Heroku Dyno (container) stats'
+                      #html.Ul(children='Heroku Dyno (container) stats', 
+                      html.Ul( 
                         [
-                        html.Li('No of CPUs : {}'.format(ps.cpu_count())),
-                        html.Li('No of processes : {}'.format(len(ps.pids()))),
+                        html.Li('# CPUs      : {}'.format(ps.cpu_count())),
+                        html.Li('RAM         : {} MB'.format(ps.virtual_memory().total >> 20)),
+                        html.Li('# processes : %u' % (len(ps.pids()))),
                       ]),
-                      #html.P(children='No of CPUs : {}'.format(ps.cpu_count())), 
-                      #html.P(children='CPU Freq   : {} MHz'.format(ps.cpu_freq().current)),
-                      #html.P(children='#processes : {}'.format(len(ps.pids()))),
                 ],
             ),
             html.Div([
