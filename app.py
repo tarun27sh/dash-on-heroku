@@ -108,16 +108,10 @@ def get_latest_layout():
                       html.H1(children='Heroku Dyno System Stats'),
             ]),
             html.Div([
-                      dcc.Markdown('''
-                      ### about),
-                      html.P(children='No of CPUs : {}'.format(ps.cpu_count())), 
-                      html.P(children='CPU Freq   : {} MHz'.format(ps.cpu_freq().current)),
-                      html.P(children='#processes : {}'.format(len(ps.pids()))),
-                      ''')
                       html.H3(children=about),
                       html.Ul([
                         html.Li('No of CPUs : {}'.format(ps.cpu_count())),
-                        html.Li('CPU Freq   : {} MHz'.format(ps.cpu_freq().current),
+                        html.Li('CPU Freq   : {} MHz'.format(ps.cpu_freq().current)),
                         html.Li('#processes : {}'.format(len(ps.pids()))),
                       ]),
                       #html.P(children='No of CPUs : {}'.format(ps.cpu_count())), 
