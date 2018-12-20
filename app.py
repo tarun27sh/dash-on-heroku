@@ -38,7 +38,7 @@ class Data:
             Data.Y3=[ps.net_io_counters().bytes_sent >> 10]
             Data.Y4=[ps.net_io_counters().bytes_recv >> 10]
             Data.Y5=[len(ps.net_connections())]
-            Data.Y6=[len(ps.cpu_freq().current)]
+            Data.Y6=[ps.cpu_freq().current]
             Data.initialized = True
             Data.ticks=0
             t = threading.Thread(self.every_one_sec_stats())
@@ -119,10 +119,10 @@ def get_latest_layout():
                       #html.Ul(children='Heroku Dyno (container) stats', 
                       html.Ul( 
                         [
-                        html.Li('# CPUs      : {}'.format(ps.cpu_count())),
-                        html.Li('RAM         : {} MB'.format(ps.virtual_memory().total >> 20)),
-                        html.Li('# processes : %u' % (len(ps.pids()))),
-                      ]),
+                        html.Li('# CPUs      : {}'.format(ps.cpu_count()), className='list-group-item'),
+                        html.Li('RAM         : {} MB'.format(ps.virtual_memory().total >> 20), className='list-group-item'),
+                        html.Li('# processes : {}'.format(len(ps.pids())), className='list-group-item'),
+                      ], className="list-group"),
                 ],
             ),
             html.Div([
