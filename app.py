@@ -50,7 +50,7 @@ class Data:
             Data.Y2.append(ps.virtual_memory().percent)
             Data.Y3.append(ps.net_io_counters().bytes_sent >> 10)
             Data.Y4.append(ps.net_io_counters().bytes_recv >> 10)
-            Data.Y5.append(ps.net_connections())
+            Data.Y5.append(len(ps.net_connections()))
             time.sleep(1)
 
     def get_timestamp_readings(self):
@@ -257,10 +257,12 @@ def my_graph_update3 ():
                                title="inet connections (last 30 seconds)",
                                xaxis = {'title' : 'Units: Seconds', 
                                         'range': [min(x_data), 
-                                                  max(x_data)]},
-                               yaxis = {'title' : '#connections'            , 
+                                                  max(x_data)]
+                                       },
+                               yaxis = {'title' : '#connections', 
                                         'range': [min(y_conn), 
-                                                  max(y_conn)]}
+                                                  max(y_conn)]
+                                       }
                                )
     }
 
