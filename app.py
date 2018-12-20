@@ -113,6 +113,9 @@ def get_latest_layout():
                       html.P(children='CPU Freq   : {} MHz'.format(ps.cpu_freq().current)),
                       html.P(children='Sockets    : {}'.format(len(ps.net_connections()))),
                       html.P(children='#processes : {}'.format(len(ps.pids()))),
+                ],
+            ),
+            html.Div([
                       dcc.Graph(
                                 id='my_graph',
                                 animate=True
@@ -124,7 +127,6 @@ def get_latest_layout():
                 ],
             ),
             html.Div([
-                      #html.H1(children='Heroku dyno packet sent/recv over time'),
                       dcc.Graph(
                                 id='my_graph2',
                                 animate=True
@@ -135,7 +137,6 @@ def get_latest_layout():
                       ),
             ]),
             html.Div([
-                      #html.H1(children='Heroku dyno packet sent/recv over time'),
                       dcc.Graph(
                                 id='my_graph3',
                                 animate=True
