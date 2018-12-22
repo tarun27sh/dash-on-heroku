@@ -14,6 +14,8 @@ from string import *
 import os
 from subprocess import check_output, STDOUT
 import redis
+import gevent.monkey
+gevent.monkey.patch_all()
 
 class Data:
     X=[]
