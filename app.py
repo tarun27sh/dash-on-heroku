@@ -177,11 +177,12 @@ LSOF = '/app/.apt/usr/bin/lsof'
 def get_lsof():
     pid = os.getpid()
     if os.path.isfile(LSOF):
-        lsof = (check_output([LSOF, '-p', str(pid)], stderr=STDOUT)).split('\n')
+        print('lsof found !')
+        lsof = (check_output([LSOF, '-i'], stderr=STDOUT)).split('\n')
         for line in lsof:
             print(line)
     else:
-        print('searching for lsof')
+        print('lsof not found, searching for lsof')
         for root, dirs, files in os.walk('/'):
             if 'lsof' in files:
                 print('Founnd!! - {}'.format(os.path.join(root, name)))
