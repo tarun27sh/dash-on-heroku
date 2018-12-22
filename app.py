@@ -98,13 +98,17 @@ class PageHits:
         if not PageHits.db:
             print('redis not set, exit')
             exit(0)
-        return int.from_bytes(PageHits.db.get('page_hits'), byteorder = 'big') or 0
+        ph = int.from_bytes(PageHits.db.get('page_hits'), byteorder = 'big') or 0    
+        print('get_page_hits: {}'.format(ph))
+        return ph
 
     def inc_page_hit(self):
         if not PageHits.db:
             print('redis not set, exit')
             exit(0)
-        PageHits.db.set('page_hits', bytes(self.get_page_hits() + 1))
+        ph = self.get_page_hits() + 1
+        print('set_page_hits: {}'.format(ph))
+        PageHits.db.set('page_hits', bytes(ph))
 
     def __str__(self):
         return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, self.get_page_hits())
@@ -202,7 +206,8 @@ def get_lsof():
 
 
 # Dash app init
-app = dash.Dash(threaded=True)
+#app = dash.Dash(threaded=True)
+app = dash.Dash(threaded=False)
 server = app.server
 
 
