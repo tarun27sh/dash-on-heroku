@@ -202,7 +202,7 @@ def get_lsof():
 
 
 # Dash app init
-app = dash.Dash()
+app = dash.Dash(threaded=True)
 server = app.server
 
 
