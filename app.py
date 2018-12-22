@@ -84,7 +84,7 @@ class Data:
 class PageHits:
     initialized = False
     db = 0
-    def __init__():
+    def __init__(self):
         pass
     def special_init(self):
         if PageHits.initialized:
