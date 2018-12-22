@@ -209,6 +209,7 @@ get_lsof()
 def my_graph_update ():
     data = Data()
     print('Update called      - ')
+    get_lsof()
     x_data = data.get_timestamp_readings()
     y_cpu = data.get_cpu_percent_readings()
     y_vmem = data.get_vmem_percent_readings()
