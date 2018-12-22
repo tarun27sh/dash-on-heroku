@@ -86,7 +86,7 @@ class PageHits:
     db = 0
     def __init__(self):
         if PageHits.initialized:
-            return
+            return PageHits.db
         else:
             if os.environ.get('REDISCLOUD_URL') is not None:
                 print('redic-cloud URL - {}'.format(os.environ.get('REDISCLOUD_URL')))
