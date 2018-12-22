@@ -13,6 +13,7 @@ from platform import platform
 from string import *
 import os
 from subprocess import check_output, STDOUT
+import redis
 
 class Data:
     X=[]
@@ -79,23 +80,34 @@ class Data:
         return 'ticks={}, cpu={}, vmem={}, KBout={}, KBin={}, conn={}'.format(self.ticks, self.Y1, self.Y2, self.Y3, self.Y4, self.Y5)
 
 class PageHits:
-    page_hits = 0
     initialized = False
+    db = 0
     def __init__(self):
         if PageHits.initialized:
             return
         else:
-            PageHits.page_hits = 0
-            PageHits.initialized = True
+            if os.environ.get('REDISCLOUD_URL') is not None:
+                print('redic-cloud URL - {}'.format(os.environ.get('REDISCLOUD_URL')))
+                PageHits.db=redis.from_url(os.environ['REDISCLOUD_URL'])
+                PageHits.initialized = True
+            else:
+                print('init: redis not set, exit')
+                exit(0)
 
     def get_page_hits(self):
-        return PageHits.page_hits
+        if not PageHits.db:
+            print('redis not set, exit')
+            exit(0)
+        return PageHits.db.get('page_hits') or 0
 
     def inc_page_hit(self):
-        PageHits.page_hits += 1
+        if not PageHits.db:
+            print('redis not set, exit')
+            exit(0)
+        PageHits.db.set('page_hits', self.get_page_hits() + 1)
 
     def __str__(self):
-        return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, PageHits.page_hits)
+        return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, self.get_page_hits())
 
 def get_platform():
     return platform()
@@ -192,7 +204,10 @@ def get_lsof():
 # Dash app init
 app = dash.Dash()
 server = app.server
+
+
 app.config['suppress_callback_exceptions']=True
+app.config['REDISCLOUD_URL'] = redis.from_url('localhost:6379')
 app.layout = get_latest_layout
 # externnal css
 app.scripts.append_script({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'})
