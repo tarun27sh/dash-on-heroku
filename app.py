@@ -8,9 +8,11 @@ import plotly.graph_objs as go
 import psutil as ps
 import threading
 import time
-from scapy.all import *
 from platform import platform
 
+from string import *
+from os import getpid
+from subprocess import check_output, STDOUT
 
 class Data:
     X=[]
@@ -172,9 +174,13 @@ def get_latest_layout():
         className='container',
     )
 
-def pkt_callback(pkt):
-    pkt.show() # debug statement
-    print('x1z: {}'.format(pkt))
+def get_lsof():
+    pid = getpid()
+    lsof = (check_output(['/app/.apt/usr/bin/lsof', '-p', str(pid)], stderr=STDOUT)).split('\n')
+    for line in lsof:
+        print(line)
+
+
 
 # Dash app init
 app = dash.Dash()
@@ -184,8 +190,7 @@ app.layout = get_latest_layout
 # externnal css
 app.scripts.append_script({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'})
 app.css.append_css({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'})
-#sniff(iface="eth0", prn=pkt_callback, filter="tcp", store=0)
-sniff(iface="eth0", prn=pkt_callback, store=0)
+get_lsof()
 
 
 
