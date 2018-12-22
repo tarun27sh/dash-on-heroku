@@ -89,6 +89,9 @@ class PageHits:
             if os.environ.get('REDISCLOUD_URL') is not None:
                 print('redic-cloud URL - {}'.format(os.environ.get('REDISCLOUD_URL')))
                 PageHits.db=redis.from_url(os.environ['REDISCLOUD_URL'])
+                if not PageHits.db:
+                    print('init: redis not set, exit')
+                    exit(0)
                 PageHits.initialized = True
             else:
                     print('init: redis not set, exit')
