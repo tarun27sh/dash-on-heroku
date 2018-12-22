@@ -98,7 +98,10 @@ class PageHits:
         if not PageHits.db:
             print('redis not set, exit')
             exit(0)
-        ph = int.from_bytes(PageHits.db.get('page_hits'), byteorder = 'big') or 0    
+        ph = int.from_bytes(PageHits.db.get('page_hits'), byteorder = 'big') or None
+        if ph is None:
+            print('errorr getting data from redis, exit')
+            exit(0)
         print('get_page_hits: {}'.format(ph))
         return ph
 
