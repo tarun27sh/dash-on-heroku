@@ -104,7 +104,7 @@ class PageHits:
         if not PageHits.db:
             print('redis not set, exit')
             exit(0)
-        PageHits.db.set('page_hits', self.get_page_hits() + 1)
+        PageHits.db.set('page_hits', bytes(self.get_page_hits() + 1))
 
     def __str__(self):
         return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, self.get_page_hits())
