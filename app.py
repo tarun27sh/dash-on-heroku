@@ -8,8 +8,8 @@ import plotly.graph_objs as go
 import psutil as ps
 import threading
 import time
-from platform import platform
 from scapy.all import *
+from platform import platform
 
 
 class Data:
