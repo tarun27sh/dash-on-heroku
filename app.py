@@ -84,7 +84,7 @@ class Data:
 class PageHits:
     initialized = False
     db = 0
-    def __init__(self):
+    def special_init(self):
         if PageHits.initialized:
             return PageHits.db
         else:
@@ -120,7 +120,7 @@ def get_platform():
     
 
 def get_latest_layout():
-    hits = PageHits()
+    hits = PageHits().special_init()
     hits.inc_page_hit()
     print('page hits set - {}'.format(hits))
     return html.Div(children = 
