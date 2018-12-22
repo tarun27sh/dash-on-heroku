@@ -11,7 +11,7 @@ import time
 from platform import platform
 
 from string import *
-from os import getpid
+import os
 from subprocess import check_output, STDOUT
 
 class Data:
@@ -119,19 +119,19 @@ def get_latest_layout():
                              children='Graphs on this page are for heroku dyno where this web application is deployed'),
                 ],
             ),
-			html.Table(className='table',
-			    children = 
-			    [
-			        html.Tr( [html.Th('Attribute'), html.Th("Value")] )
-			    ] +
-			    [
-			        html.Tr( [html.Td('OS'),         html.Td('{}'.format(get_platform()))] ),
-			        html.Tr( [html.Td('#CPUs'),      html.Td('{}'.format(ps.cpu_count()))] ),
-			        html.Tr( [html.Td('CPU Clock'),  html.Td('{} MHz'.format(int(ps.cpu_freq().current)))] ),
-			        html.Tr( [html.Td('RAM'),       html.Td('{} GB'.format(ps.virtual_memory().total >> 30))] ),
-			        html.Tr( [html.Td('#processes'), html.Td('{}'.format(len(ps.pids())))] ),
-			    ]
-			),
+            html.Table(className='table',
+                children = 
+                [
+                    html.Tr( [html.Th('Attribute'), html.Th("Value")] )
+                ] +
+                [
+                    html.Tr( [html.Td('OS'),         html.Td('{}'.format(get_platform()))] ),
+                    html.Tr( [html.Td('#CPUs'),      html.Td('{}'.format(ps.cpu_count()))] ),
+                    html.Tr( [html.Td('CPU Clock'),  html.Td('{} MHz'.format(int(ps.cpu_freq().current)))] ),
+                    html.Tr( [html.Td('RAM'),       html.Td('{} GB'.format(ps.virtual_memory().total >> 30))] ),
+                    html.Tr( [html.Td('#processes'), html.Td('{}'.format(len(ps.pids())))] ),
+                ]
+            ),
             
             html.Div(className="border border-primary",
                       children = [
@@ -173,12 +173,18 @@ def get_latest_layout():
         ],
         className='container',
     )
-
+LSOF = '/app/.apt/usr/bin/lsof'
 def get_lsof():
-    pid = getpid()
-    lsof = (check_output(['/app/.apt/usr/bin/lsof', '-p', str(pid)], stderr=STDOUT)).split('\n')
-    for line in lsof:
-        print(line)
+    pid = os.getpid()
+    if os.path.isfile(LSOF):
+        lsof = (check_output([LSOF, '-p', str(pid)], stderr=STDOUT)).split('\n')
+        for line in lsof:
+            print(line)
+    else:
+        print('searching for lsof')
+        for root, dirs, files in os.walk('/'):
+            if 'lsof' in files:
+                print('Founnd!! - {}'.format(os.path.join(root, name)))
 
 
 
