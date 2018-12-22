@@ -88,12 +88,13 @@ class PageHits:
         pass
     def special_init(self):
         if PageHits.initialized:
-            return PageHits.db
+            return PageHits
         else:
             if os.environ.get('REDISCLOUD_URL') is not None:
                 print('redic-cloud URL - {}'.format(os.environ.get('REDISCLOUD_URL')))
                 PageHits.db=redis.from_url(os.environ['REDISCLOUD_URL'])
                 PageHits.initialized = True
+                return PageHits
             else:
                 print('init: redis not set, exit')
                 exit(0)
@@ -122,7 +123,8 @@ def get_platform():
     
 
 def get_latest_layout():
-    hits = PageHits().special_init()
+    hits = PageHits()
+    hits = hits.special_init()
     hits.inc_page_hit()
     print('page hits set - {}'.format(hits))
     return html.Div(children = 
