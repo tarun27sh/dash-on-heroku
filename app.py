@@ -1,3 +1,5 @@
+import gevent.monkey
+gevent.monkey.patch_all()
 import dash
 from dash.dependencies import Output, Event
 import dash_core_components as dcc
@@ -14,8 +16,6 @@ from string import *
 import os
 from subprocess import check_output, STDOUT
 import redis
-import gevent.monkey
-gevent.monkey.patch_all()
 
 class Data:
     X=[]
