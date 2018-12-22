@@ -13,3 +13,4 @@ psutil==5.4.8
 Werkzeug==0.14.1
 gunicorn==19.9.0
 newrelic==4.8.0.110
+scapy==2.4.0

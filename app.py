@@ -9,6 +9,7 @@ import psutil as ps
 import threading
 import time
 from platform import platform
+from scapy.all import *
 
 
 class Data:
@@ -171,6 +172,9 @@ def get_latest_layout():
         className='container',
     )
 
+def pkt_callback(pkt):
+    pkt.show() # debug statement
+    print('x1z: {}'.format(pkt))
 
 # Dash app init
 app = dash.Dash()
@@ -180,6 +184,8 @@ app.layout = get_latest_layout
 # externnal css
 app.scripts.append_script({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'})
 app.css.append_css({"external_url": 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'})
+#sniff(iface="eth0", prn=pkt_callback, filter="tcp", store=0)
+sniff(iface="eth0", prn=pkt_callback, store=0)
 
 
 
