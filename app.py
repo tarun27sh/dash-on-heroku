@@ -98,7 +98,7 @@ class PageHits:
         if not PageHits.db:
             print('redis not set, exit')
             exit(0)
-        return PageHits.db.get('page_hits') or 0
+        return int(PageHits.db.get('page_hits')) or 0
 
     def inc_page_hit(self):
         if not PageHits.db:
