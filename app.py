@@ -93,6 +93,7 @@ class PageHits:
                     print('init: redis not set, exit')
                     exit(0)
                 PageHits.initialized = True
+                PageHits.db.set('page_hits', bytes(0))
             else:
                     print('init: redis not set, exit')
                     exit(0)
