@@ -116,7 +116,7 @@ class PageHits:
             print('redis not set, exit')
             exit(0)
         PageHits.redis.incr('page_hits', 1)
-        print('set_page_hits: {}'.format(PageHits.get_page_hits()))
+        print('set_page_hits: {}'.format(self.get_page_hits()))
 
     def __str__(self):
         return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, self.get_page_hits())
