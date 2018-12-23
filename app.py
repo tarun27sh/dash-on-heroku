@@ -319,7 +319,7 @@ def my_graph_update3 ():
                                                   max(x_data)]
                                        },
                                yaxis = {'title' : '#connections', 
-                                        'range': [min(y_conn), 
+                                        'range': [0, 
                                                   max(y_conn)]
                                        }
                                )
