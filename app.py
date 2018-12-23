@@ -83,40 +83,40 @@ class Data:
 
 class PageHits:
     initialized = False
-    db = 0
+    redis = 0
     def __init__(self):
         if not PageHits.initialized:
             if os.environ.get('REDISCLOUD_URL') is not None:
+                PageHits.redis = redis.from_url(os.environ['REDISCLOUD_URL'])
                 print('redic-cloud URL - {}'.format(os.environ.get('REDISCLOUD_URL')))
-                PageHits.db=redis.from_url(os.environ['REDISCLOUD_URL'])
-                if not PageHits.db:
+                print('redic-cloud instance - {}'.format(PageHits.redis))
+                if not PageHits.redis:
                     print('init: redis not set, exit')
                     exit(0)
                 PageHits.initialized = True
-                PageHits.db.set('page_hits', bytes(0))
+                PageHits.redis.set('page_hits', 0)
             else:
                     print('init: redis not set, exit')
                     exit(0)
 
     def get_page_hits(self):
-        if not PageHits.db:
+        if not PageHits.redis:
             print('redis not set, exit')
             exit(0)
-        ph = int.from_bytes(PageHits.db.get('page_hits'), byteorder = 'big')
+        ph = int.from_bytes(PageHits.redis.get('page_hits'), byteorder = 'big')
         print('ph = {}'.format(ph))
-        if ph is None:
+        if not ph:
             print('errorr getting data from redis, exit')
             exit(0)
         print('get_page_hits: {}'.format(ph))
         return ph
 
     def inc_page_hit(self):
-        if not PageHits.db:
+        if not PageHits.redis:
             print('redis not set, exit')
             exit(0)
-        ph = self.get_page_hits() + 1
-        print('set_page_hits: {}'.format(ph))
-        PageHits.db.set('page_hits', bytes(ph))
+        PageHits.redis.incr('page_hits', 1)
+        print('set_page_hits: {}'.format(PageHits.get_page_hits()))
 
     def __str__(self):
         return 'Initialized = {}, Hits = {}'.format(PageHits.initialized, self.get_page_hits())
